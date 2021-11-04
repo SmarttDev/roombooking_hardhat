@@ -38,3 +38,7 @@ You can add other address in each company's whitelist.
 Each address in the whitelist can reserve a room in its company calendar.
 
 Only the addresses that have reserved a room can cancel the reservation.
+
+# Contract Address
+
+Ropsten -> 0xB07432cd6f0801F8A1649931b45Fcf8ed5FB0e71
