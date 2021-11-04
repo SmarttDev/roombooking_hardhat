@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/RoomBooking.sol": {
+      "content": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.8.4;\n\ncontract RoomBooking {\n\n    struct Room {\n        bool booked;\n        address owner;\n    }\n\n    uint8 public constant MAX_ROOM = 10;\n    uint8 public constant MAX_SLOT = 8;\n\n    mapping(string => mapping(uint8 => Room[MAX_ROOM])) public roomlist;\n    mapping(string => mapping(address => bool)) public whitelist;\n\n    string[] private companies;\n\n    event Reserved(address _occupant, string _company, uint8 _slot, uint8 _roomSpace);\n    event Canceled(address _occupant, string _company, uint8 _slot, uint8 _roomSpace);\n    event Whitelisted(string _company, address _address);\n\n    modifier inSlotRange (uint8 _slot) {\n        // check if the slot is under MAX_SLOT\n        require(_slot < MAX_SLOT, \"Slot is out of range!\");\n        _;\n    }\n\n    modifier inRoomRange (uint8 _roomSpace) {\n        // check if the room is under MAX_ROOM\n        require(_roomSpace < MAX_ROOM, \"Room is out of range!\");\n        _;\n    }\n\n    constructor(string[] memory _companies, address[] memory _addresses) {\n        companies = _companies;\n        // For each company, we add address in whitelist\n        for (uint i = 0; i < _companies.length; i++) {\n            whitelist[_companies[i]][_addresses[i]] = true;\n        }\n\n    }\n\n    function getCompanies() public view returns(string[] memory) {\n        return companies;\n    }\n\n    function reserveRoomSpace(string memory _company, uint8 _slot, uint8 _roomSpace) public inSlotRange(_slot) inRoomRange(_roomSpace) {\n        // Check that is an Admin call this function\n        require(whitelist[_company][msg.sender], \"Not allowed to reserve room!\");\n        roomlist[_company][_slot][_roomSpace].booked = true;\n        roomlist[_company][_slot][_roomSpace].owner = msg.sender;\n        emit Reserved(msg.sender, _company, _slot, _roomSpace);\n    }\n\n    function cancelRoomSpace(string memory _company, uint8 _slot, uint8 _roomSpace) public inSlotRange(_slot) inRoomRange(_roomSpace) {\n        // Check that is an Admin call this function\n        require(whitelist[_company][msg.sender], \"Not allowed to cancel room!\");\n        roomlist[_company][_slot][_roomSpace].booked = false;\n        roomlist[_company][_slot][_roomSpace].owner = address(0);\n        emit Canceled(msg.sender, _company, _slot, _roomSpace);\n    }\n\n    function addWhitelist(string memory _company, address _address) public {\n        // Check that is an Admin call this function\n        require(whitelist[_company][msg.sender], \"Operation not allowed!\");\n        // Check if address already in whitelist\n        require(!whitelist[_company][_address], \"Address already whitelisted!\");\n        whitelist[_company][_address] = true;\n        emit Whitelisted(_company, _address);\n    }\n}"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
