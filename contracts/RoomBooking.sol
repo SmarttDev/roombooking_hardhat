@@ -18,6 +18,10 @@ contract RoomBooking {
 
     string[] private companies;
 
+    event Reserved(address _occupant, string _company, uint8 _slot, uint8 _roomSpace);
+    event Canceled(address _occupant, string _company, uint8 _slot, uint8 _roomSpace);
+    event Whitelisted(string _company, address _address);
+
     modifier inSlotRange (uint8 _slot) {
         // check if the slot is under MAX_SLOT
         require(_slot < MAX_SLOT, "Slot is out of range!");
@@ -29,10 +33,6 @@ contract RoomBooking {
         require(_roomSpace < MAX_ROOM, "Room is out of range!");
         _;
     }
-
-    event Reserved(address _occupant, string _company, uint8 _slot, uint8 _roomSpace);
-    event Canceled(address _occupant, string _company, uint8 _slot, uint8 _roomSpace);
-    event Whitelisted(string _company, address _address);
 
     constructor(string[] memory _companies, address[] memory _addresses) {
         companies = _companies;

@@ -13,7 +13,12 @@ import "@typechain/ethers-v5";
 import "solidity-coverage";
 
 dotenv.config();
-const { DEPLOYER_PRIVATE_KEY, INFURA_PROJECT_ID } = process.env;
+const {
+  DEPLOYER_PRIVATE_KEY,
+  COKE_ADMIN_PK,
+  PEPSI_ADMIN_PK,
+  INFURA_PROJECT_ID,
+} = process.env;
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -71,7 +76,13 @@ const config: HardhatUserConfig = {
           ? `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`
           : "",
       accounts:
-        DEPLOYER_PRIVATE_KEY !== undefined ? [`0x${DEPLOYER_PRIVATE_KEY}`] : [],
+        DEPLOYER_PRIVATE_KEY !== undefined
+          ? [
+              `0x${DEPLOYER_PRIVATE_KEY}`,
+              `0x${COKE_ADMIN_PK}`,
+              `0x${PEPSI_ADMIN_PK}`,
+            ]
+          : [],
     },
     ropsten: {
       url:
@@ -79,7 +90,13 @@ const config: HardhatUserConfig = {
           ? `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`
           : "",
       accounts:
-        DEPLOYER_PRIVATE_KEY !== undefined ? [`0x${DEPLOYER_PRIVATE_KEY}`] : [],
+        DEPLOYER_PRIVATE_KEY !== undefined
+          ? [
+              `0x${DEPLOYER_PRIVATE_KEY}`,
+              `0x${COKE_ADMIN_PK}`,
+              `0x${PEPSI_ADMIN_PK}`,
+            ]
+          : [],
     },
     rinkeby: {
       url:
@@ -87,12 +104,24 @@ const config: HardhatUserConfig = {
           ? `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`
           : "",
       accounts:
-        DEPLOYER_PRIVATE_KEY !== undefined ? [`0x${DEPLOYER_PRIVATE_KEY}`] : [],
+        DEPLOYER_PRIVATE_KEY !== undefined
+          ? [
+              `0x${DEPLOYER_PRIVATE_KEY}`,
+              `0x${COKE_ADMIN_PK}`,
+              `0x${PEPSI_ADMIN_PK}`,
+            ]
+          : [],
     },
     bsctestnet: {
       url: "https://data-seed-prebsc-1-s1.binance.org:8545",
       accounts:
-        DEPLOYER_PRIVATE_KEY !== undefined ? [`0x${DEPLOYER_PRIVATE_KEY}`] : [],
+        DEPLOYER_PRIVATE_KEY !== undefined
+          ? [
+              `0x${DEPLOYER_PRIVATE_KEY}`,
+              `0x${COKE_ADMIN_PK}`,
+              `0x${PEPSI_ADMIN_PK}`,
+            ]
+          : [],
     },
   },
   namedAccounts: {
