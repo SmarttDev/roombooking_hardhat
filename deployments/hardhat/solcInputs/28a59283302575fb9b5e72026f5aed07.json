@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/RoomBooking.sol": {
+      "content": "//SPDX-License-Identifier: Unlicense\npragma solidity ^0.8.4;\n\ncontract RoomBooking {\n\n    struct Room {\n        bool booked;\n        string partnerName;\n        address owner;\n    }\n\n    uint8 public constant maxRoom = 10;\n    uint8 public constant maxSlot = 8;\n\n    mapping(string => mapping(uint8 => Room[maxRoom -1])) public roomlist;\n    mapping(string => mapping(address => bool)) public whitelist;\n\n    string[] private companies;\n\n    modifier inSlotRange (uint8 _slot) {\n        // check if the slot is under maxSlot\n        require(_slot < maxSlot, \"Slot is out of range\");\n        _;\n    }\n\n    event Reserved(address _occupant, string _company, uint8 _roomSpace, uint8 _slot);\n    event Whitelisted(address _address, string _company);\n\n    constructor(string[] memory _companies, address[] memory _addresses) {\n        companies = _companies;\n        // For each company, we add address in whitelist\n        for (uint i = 0; i < _companies.length; i++) {\n            whitelist[_companies[i]][_addresses[i]] = true;\n        }\n\n    }\n\n    function getCompanies() public view returns(string[] memory) {\n        return companies;\n    }\n\n    function reserveRoomSpace(string memory _company, uint8 _roomSpace, uint8 _slot) public inSlotRange(_slot) {\n        // Check that is an Admin call this function\n        require(!whitelist[_company][msg.sender], \"You are not allowed to reserve room !\");\n        roomlist[_company][_slot][_roomSpace].booked = true;\n        roomlist[_company][_slot][_roomSpace].partnerName = \"title partner1\";\n        roomlist[_company][_slot][_roomSpace].owner = msg.sender;\n        emit Reserved(msg.sender, _company, _roomSpace, _slot);\n    }\n\n    function addWhitelist(address _address, string memory _company) public {\n        // Check that is an Admin call this function\n        require(!whitelist[_company][msg.sender], \"You are not allowed to whitelist an address !\");\n        // Check if address already in whitelist\n        require(!whitelist[_company][_address], \"This address is already whitelisted !\");\n        whitelist[_company][_address] = true;\n        emit Whitelisted(_address, _company);\n    }\n}"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
